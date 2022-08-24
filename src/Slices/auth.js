@@ -1,14 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUser, logoutUser, registerUser, updateUser } from "../Actions/authenticationActions";
+import { forgotPassword, loginUser, logoutUser, registerUser, resetPassword, updateUser } from "../Actions/authenticationActions";
 import { setMessage } from "./message";
 const user = JSON.parse(localStorage.getItem("user"));
 
 
 export const register = createAsyncThunk(
   "auth/register",
-  async ({ email, password, userId, firstname, lastname }, thunkAPI) => {
+  async ({ email, password, userId, courseId, firstname, lastname }, thunkAPI) => {
+    console.log('1111',email, password, userId, courseId, firstname, lastname)
     try {
-      const response = await registerUser(email, password, userId, firstname, lastname);
+      const response = await registerUser(email, password, userId, courseId, firstname, lastname);
       console.log(response)
       return {user: response};
     } catch (error) {
@@ -80,6 +81,73 @@ export const update = createAsyncThunk(
   }
 );
 
+
+// export const change = createAsyncThunk(
+//   "auth/change-password",
+//   async ({id, token, payload}, thunkAPI) => {
+//       console.log(id, token, payload)
+//     try {
+//       console.log(id, token, payload)
+//       const data = await changePassword(id, token, payload);
+//       console.log(data)
+//       return  data;
+//     } catch (error) {
+//       console.error(error.response.data.error)
+//       let message;
+//       if(error.response.data.error.status){
+//         message = 'Podałeś niepoprawne dane'
+//       }
+//       // const message =
+//       //   (error.response &&
+//       //     error.response.data &&
+//       //     error.response.data.message) ||
+//       //   error.message ||
+//       //   error.toString();
+//         console.log(message)
+//       thunkAPI.dispatch(setMessage(message));
+//       return thunkAPI.rejectWithValue();
+//     }
+//   }
+// );
+
+export const reset = createAsyncThunk(
+  "auth/reset-password",
+  async ({code, password, repeatPassword}, thunkAPI) => {
+    console.log({code, password, repeatPassword})
+    try {
+      const data = await resetPassword({code, password, repeatPassword});
+      return  data;
+    } catch (error) {
+      console.error(error.response.data.error)
+      let message;
+      if(error.response.data.error.status){
+        message = 'Podałeś niepoprawne dane'
+      }
+        console.log(message)
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+export const forgot = createAsyncThunk(
+  "auth/forgot-password",
+  async (payload, thunkAPI) => {
+    try {
+      const data = await forgotPassword(payload);
+      return  data;
+    } catch (error) {
+      console.error(error.response.data.error)
+      let message;
+      if(error.response.data.error.status){
+        message = 'Podałeś niepoprawne dane'
+      }
+        console.log(message)
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   await logoutUser();

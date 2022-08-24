@@ -17,10 +17,12 @@ import CardMedia from "@mui/material/CardMedia";
 import DropdownShareButton from "../../Components/DropdownShareButton";
 import { Fade } from '@mui/material';
 import { getCertificates } from "../../Slices/certificates";
+import { useDocumentTitle } from "../../Hooks/useDocumentTitle";
 
 const UPLOADS_URL = process.env.REACT_APP_UPLOADS_URL;
 
 export default function Qualifications() {
+  useDocumentTitle('kwalifikacje')
   const [displaySelected, setDisplaySelected] = useState(false)
   const [filtered, setFiltered] = useState()
   const dispatch = useDispatch();

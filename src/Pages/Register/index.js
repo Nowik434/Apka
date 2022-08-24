@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -19,13 +19,15 @@ import FormHelperText from "@mui/material/FormHelperText";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useDocumentTitle } from "../../Hooks/useDocumentTitle";
 
 const token = "YOUR_TOKEN_HERE"; // TOKEN TRZEBA USTAWIĆ, Narazie działa bez
 
 export default function Register() {
+  useDocumentTitle('rejestracja')
   let navigate = useNavigate();
   const dispatch = useDispatch();
-  let { userId, firstname, lastname, email } = useParams();
+  let { userId, courseId, firstname, lastname, email } = useParams();
 
   const schema = yup.object({
     password: yup
@@ -35,6 +37,10 @@ export default function Register() {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
         "Hasło musi zawierać przynajmniej 8 znaków, jedną małą i wielką literę, jedną liczbę oraz znak specjalny"
       ),
+    repeatPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'Hasło musi być takie samo')
+      .required('Powtórz hasło'),
   });
 
   const {
@@ -46,9 +52,9 @@ export default function Register() {
     resolver: yupResolver(schema),
   });
 
-  console.log(userId, firstname, lastname, email);
   const [loadnig, setLoading] = useState(false);
-  const [password, setPassword] = useState();
+  const [isValidate, setIsValidate] = useState(false);
+  // const [password, setPassword] = useState();
   const [clamped, setClamped] = useState(true);
   const [checkboxes, setCheckboxes] = useState({
     rodo: false,
@@ -58,6 +64,16 @@ export default function Register() {
   const { rodo, terms } = checkboxes;
   const error = [rodo, terms].filter((v) => v).length !== 2;
 
+  useEffect(()=> {
+    if(!error && watch("password") !== '' && watch("repeatPassword") !== '' ){
+      setIsValidate(true);
+    } else {
+      setIsValidate(false);
+    }
+  }, [checkboxes, watch("password"), watch("repeatPassword")])
+
+  
+
   const onSubmit = (data) => {
     setLoading(true);
     try {
@@ -66,6 +82,7 @@ export default function Register() {
           email,
           password: data.password,
           userId,
+          courseId,
           firstname,
           lastname,
         })
@@ -131,6 +148,18 @@ export default function Register() {
             margin="normal"
             required
             fullWidth
+            id="courseId"
+            label="Id kursu"
+            name="courseId"
+            value={courseId}
+            autoFocus
+            disabled
+            sx={{ display: "none" }}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
             id="firstname"
             label="Imię"
             name="firstname"
@@ -170,7 +199,36 @@ export default function Register() {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
+            // onChange={(e) => setPassword(e.target.value)}
+            {...register("password")}
+            helperText={errors.password && errors.password.message}
+            error={errors.password !== undefined}
+          />
+
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="repeatPassword"
+            label="Powtórz hasło"
+            type="password"
+            id="repeatPassword"
+            autoComplete="current-password"
+            {...register("repeatPassword")}
+            helperText={errors.repeatPassword && errors.repeatPassword.message}
+            error={errors.repeatPassword !== undefined}
+          />
+
+{/* <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Hasło"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            // onChange={(e) => setPassword(e.target.value)}
             {...register("password", {
               required: "Musisz wpisać hasło",
               minLength: {
@@ -193,7 +251,8 @@ export default function Register() {
             autoComplete="current-password"
             {...register("repeatPassword", {
               validate: (value) => {
-                if (watch("password") != value) {
+                console.log(watch("password"), value, errors.repeatPassword)
+                if (watch("password") !== value) {
                   return "Hasła nie są takie same";
                 }
               },
@@ -201,6 +260,7 @@ export default function Register() {
             helperText={errors.repeatPassword && errors.repeatPassword.message}
             error={errors.repeatPassword !== undefined}
           />
+           */}
           <FormGroup>
             <FormControlLabel
               control={
@@ -279,7 +339,7 @@ export default function Register() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={error}
+            disabled={!isValidate}
           >
             Zarejestruj
           </Button>
@@ -295,7 +355,7 @@ export default function Register() {
           </Grid>
         </Box>
       </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
+      {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
     </Container>
   );
 }

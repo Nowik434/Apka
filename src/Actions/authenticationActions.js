@@ -11,13 +11,14 @@ export const authHeader = () => {
     }
   }
 
-  export const registerUser = async (email, password, userId, firstname, lastname) => {
-    console.log(email, password, userId, firstname, lastname)
+  export const registerUser = async (email, password, userId, courseId, firstname, lastname) => {
+    console.log(email, password, userId, courseId, firstname, lastname)
     return axios.post(API_URL + "/auth/local/register", {
       username: email,
       email,
       password,
       userId,
+      courseId,
       firstname,
       lastname
     }) .then((response) => {
@@ -80,6 +81,64 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
 
+// export const changePassword = async (id, token, payload) => {
+//   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+//     console.log('change pass')
+//     return axios
+//     .post(API_URL + `/api/auth/reset-password`, {
+//           code: payload.code,
+//           password: payload.password,
+//           passwordConfirmation: payload.passwordConfirmation,
+//     })
+//     .then((response) => {
+//       if (token) {
+//           localStorage.setItem("user", JSON.stringify({jwt: token, user: response.data}));
+//         }
+//       // console.log('wysłano', response.data)
+//       return {jwt: token, user: response.data}
+//     }).catch(err => {
+//       console.log(err)
+//     })
+//   };
+
+export const resetPassword = async (payload) => {
+  console.log(payload)
+    console.log('reset pass')
+    return axios
+    .post(API_URL + `/auth/reset-password`, {
+          code: payload.code,
+          password: payload.password,
+          passwordConfirmation: payload.repeatPassword,
+    })
+    .then((response) => {
+      if(response.status === 200) {
+        console.log('wysłano', response)
+        return response;
+      }
+    }).catch(err => {
+      console.log(err)
+    })
+  };
+
+  export const forgotPassword = async (email) => {
+    // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      console.log('forgot pass',email)
+      return axios
+      .post(API_URL + `/auth/forgot-password`, {
+            email: email,
+      })
+      .then((response) => {
+        if(response.status === 200) {
+          console.log('wysłano', response)
+          return response;
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    };
+
+
 export const logoutUser = () => {
   localStorage.removeItem("user");
+  sessionStorage.removeItem("certificates");
 };

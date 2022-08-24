@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import userService from "../Actions/services";
 import { setMessage } from "./message";
 const user = JSON.parse(localStorage.getItem("user"));
+const cert = JSON.parse(sessionStorage.getItem("certificates"));
 
 
 
@@ -28,8 +29,11 @@ export const getCertificates = createAsyncThunk(
 );
 
 
-const initialState = [];
-
+// const initialState = [];
+console.log(cert)
+const initialState = cert
+  ? cert
+  :  [];
 
 const getCertificatesSlice = createSlice({
   name: "certificates",

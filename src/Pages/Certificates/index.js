@@ -15,15 +15,20 @@ import { getCertificates } from "../../Slices/certificates";
 import AdditionalForm from "../../Components/AdditionalForm";
 import Skeleton from "@mui/material/Skeleton";
 import Copyright from "../../Components/Copyright";
+import { useDocumentTitle } from "../../Hooks/useDocumentTitle";
 
-export default function Main() {
+export default function Certificates() {
+  useDocumentTitle('certyfikaty')
   const dispatch = useDispatch();
   // let navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const certificates = useSelector((state) => state.certificates);
-
+console.log(certificates)
   useEffect(() => {
-    dispatch(getCertificates(user.user.email));
+    dispatch(getCertificates(user.user.email)).then((res)=> {
+      // console.log('ccccccccccccccccc',res.payload.certificates.data.data)
+      sessionStorage.setItem("certificates", JSON.stringify(res.payload.certificates.data.data));
+    });
   }, []);
 
 
@@ -76,16 +81,22 @@ export default function Main() {
                       flexDirection: "column",
                     }}
                   >
+                    <Link2
+                        to={`/certificates/${attributes.cerId}`}
+                        style={{ textDecoration: "none" }}
+                      >
                     <CardMedia
                       component="img"
                       image={attributes.url}
                       alt="random"
                     />
+                    </Link2>
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h5" component="h2">
                         {attributes.name}
                       </Typography>
-                      <Typography>{attributes.date}</Typography>
+                      <Typography variant="h6" sx={{fontSize: '12px', fontWeight: '200'}}>NR. CERT: <span style={{fontWeight: 'bold'}}>{attributes.cerId}</span></Typography>
+                      <Typography variant="h6" sx={{fontSize: '12px', fontWeight: '200'}}>WYDANO: <span style={{fontWeight: 'bold'}}>{attributes.date}</span></Typography>
                     </CardContent>
                     <CardActions sx={{ alignSelf: "center" }}>
                       <Link2

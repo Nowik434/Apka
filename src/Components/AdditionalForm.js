@@ -77,7 +77,7 @@ export default function AdditionalForm() {
   });
 
   const onSubmit = (data) => {
-    console.log('on submit')
+    // console.log('on submit')
     console.log(data, errors);
     console.log(errors);
     dispatch(
@@ -171,7 +171,7 @@ export default function AdditionalForm() {
                   name="region"
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  defaultValue={region}
+                  defaultValue={region ? region : ''}
                   onChange={(e) => setRegion(e.target.value)}
                   label="Województwo"
                   {...register("region")}
@@ -198,7 +198,7 @@ export default function AdditionalForm() {
                   name="education"
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  defaultValue={education}
+                  defaultValue={education ? education : ''}
                   label="Wykształcenie"
                   onChange={(e) => setEducation(e.target.value)}
                   {...register("education")}
@@ -224,7 +224,7 @@ export default function AdditionalForm() {
                   name="typeOfEducation"
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  defaultValue={typeOfEducation}
+                  defaultValue={typeOfEducation ? typeOfEducation : ''}
                   label="Kierunek wykształcenia"
                   onChange={(e) => setTypeOfEducation(e.target.value)}
                   {...register("typeOfEducation")}
