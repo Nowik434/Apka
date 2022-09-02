@@ -18,6 +18,7 @@ import DropdownShareButton from "../../Components/DropdownShareButton";
 import { Fade } from '@mui/material';
 import { getCertificates } from "../../Slices/certificates";
 import { useDocumentTitle } from "../../Hooks/useDocumentTitle";
+import { Footer } from "../../Components/Footer";
 
 const UPLOADS_URL = process.env.REACT_APP_UPLOADS_URL;
 
@@ -154,19 +155,7 @@ export default function Qualifications() {
             </Grid>
         </Container>
       </main>
-      <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Tekst w footer
-        </Typography>
-      </Box>
+      <Footer/>
     </>
   );
 }

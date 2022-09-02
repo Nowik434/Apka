@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import FormHelperText from "@mui/material/FormHelperText";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -61,11 +61,11 @@ export default function AdditionalForm() {
       .string()
       .required("Kierunek wykształcenia jest wymagany"),
     phone: yup
-      .number()
-      .typeError("Pole musi być numerem")
-      .min(6, "Numer musi być 6 cyfrowy")
+      .string()
       .required("Numer jest wymagany")
-      .integer(),
+      .matches(/^[0-9]+$/, "Numer musi być liczbą")
+      .min(9, 'Numer musi być 6 cyfrowy')
+      .max(9, 'Numer musi być 6 cyfrowy')
   });
 
   const {

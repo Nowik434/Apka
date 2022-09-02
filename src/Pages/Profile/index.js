@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
@@ -18,7 +18,7 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import FormData from "form-data";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm} from "react-hook-form";
 import FormHelperText from "@mui/material/FormHelperText";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -62,19 +62,19 @@ export default function Profile() {
   const [file, setFile] = useState();
 
   const AdditionalFormSchema = yup.object().shape({
-    firstname: yup.string().required("Imię jest wymagane"),
-    lastname: yup.string().required("Nazwisko jest wymagane"),
+    firstname: yup.string().required("Imię jest wymagane").min(3, 'Imię jest za krótkie'),
+    lastname: yup.string().required("Nazwisko jest wymagane").min(3, 'Nazwisko jest za krótkie'),
     region: yup.string().required("Województwo jest wymagane"),
     education: yup.string().required("Wykształcenie jest wymagane"),
     typeOfEducation: yup
       .string()
       .required("Kierunek wykształcenia jest wymagany"),
     phone: yup
-      .number()
-      .typeError("Pole musi być numerem")
-      .min(6, "Numer musi być 6 cyfrowy")
+      .string()
       .required("Numer jest wymagany")
-      .integer(),
+      .matches(/^[0-9]+$/, "Numer musi być liczbą")
+      .min(9, 'Numer musi być 6 cyfrowy')
+      .max(9, 'Numer musi być 6 cyfrowy')
   });
 
   const {

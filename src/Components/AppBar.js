@@ -29,6 +29,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AuthVerify from "../Actions/AuthVerify";
 
 const UPLOADS_URL = process.env.REACT_APP_UPLOADS_URL;
 
@@ -113,13 +114,15 @@ const AppBarNav = () => {
               ></Avatar>
             </IconButton>
           </Link>
-          <IconButton
-            color="inherit"
-            onClick={() => handleLogout()}
-            sx={{ ml: 1, display: mobileWidth ? "none" : null }}
-          >
-            <LogoutIcon color="fontWhite" />
-          </IconButton>
+          <AuthVerify logOut={handleLogout}>
+            <IconButton
+              color="inherit"
+              onClick={()=>handleLogout()}
+              sx={{ ml: 1, display: mobileWidth ? "none" : null }}
+            >
+              <LogoutIcon color="fontWhite" />
+            </IconButton>
+          </AuthVerify>
           {/* MOBILE MENU */}
           <IconButton
             size="large"
@@ -206,13 +209,15 @@ const AppBarNav = () => {
               </Link>
             </ListItem>
             <ListItem disablePadding>
-              <ListItemButton onClick={() => handleLogout()}>
-                <ListItemIcon>
-                  <LogoutIcon sx={{ mr: 1 }} />
-                  Wyloguj
-                </ListItemIcon>
-                <ListItemText />
-              </ListItemButton>
+              <AuthVerify logOut={handleLogout}>
+                <ListItemButton onClick={()=>handleLogout()}>
+                  <ListItemIcon>
+                    <LogoutIcon sx={{ mr: 1 }} />
+                    Wyloguj
+                  </ListItemIcon>
+                  <ListItemText />
+                </ListItemButton>
+              </AuthVerify>
             </ListItem>
           </List>
         </Drawer>

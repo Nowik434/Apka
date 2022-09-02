@@ -25,7 +25,6 @@ export const authHeader = () => {
         if (response.data.jwt) {
           localStorage.setItem("user", JSON.stringify(response.data));
         }
-        // console.log('data from register',response.data)
         return response.data;
       })
       .catch((error) => {
@@ -33,20 +32,36 @@ export const authHeader = () => {
       });
   };
 
+  export const registerAsGuest = async (email, password, firstname, lastname, userRole) => {
+    console.log(email, password, firstname, lastname, userRole)
+    return axios.post(API_URL + "/auth/local/register", {
+      username: email,
+      email,
+      password,
+      firstname,
+      lastname,
+      userRole
+    }) .then((response) => {
+        if (response.data.jwt) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+        }
+        return response.data;
+      })
+  };
+
 
 export const loginUser = async (username, password) => {
-    // console.log(username, password)
     return axios
     .post(API_URL + "/auth/local", {
         identifier: username,
         password: password,
     })
     .then((response) => {
+      // console.log(JSON.parse(atob(response.data.jwt.split('.')[1])))
       if (response.data.jwt) {
         localStorage.setItem("user", JSON.stringify(response.data));
       }
       return response.data
-      // console.log(response.data)
     })
 };
 
@@ -73,7 +88,6 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     if (token) {
         localStorage.setItem("user", JSON.stringify({jwt: token, user: response.data}));
       }
-    // console.log('wysłano', response.data)
     return {jwt: token, user: response.data}
   }).catch(err => {
     console.log(err)
@@ -115,12 +129,10 @@ export const resetPassword = async (payload) => {
         console.log('wysłano', response)
         return response;
       }
-    }).catch(err => {
-      console.log(err)
     })
   };
 
-  export const forgotPassword = async (email) => {
+  export const forgotPassword = async (email, thunkAPI) => {
     // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       console.log('forgot pass',email)
       return axios
@@ -132,8 +144,6 @@ export const resetPassword = async (payload) => {
           console.log('wysłano', response)
           return response;
         }
-      }).catch(err => {
-        console.log(err)
       })
     };
 

@@ -83,7 +83,8 @@ export default function Login() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            // marginTop: 8,
+            marginTop: {xs: 1, md: 8},
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

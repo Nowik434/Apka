@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -10,23 +10,23 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as Link2, useNavigate } from "react-router-dom";
+import { Link as Link2 } from "react-router-dom";
 import { getCertificates } from "../../Slices/certificates";
 import AdditionalForm from "../../Components/AdditionalForm";
 import Skeleton from "@mui/material/Skeleton";
-import Copyright from "../../Components/Copyright";
 import { useDocumentTitle } from "../../Hooks/useDocumentTitle";
+import { Footer } from "../../Components/Footer";
 
 export default function Certificates() {
   useDocumentTitle('certyfikaty')
   const dispatch = useDispatch();
-  // let navigate = useNavigate();
+
   const { user } = useSelector((state) => state.auth);
   const certificates = useSelector((state) => state.certificates);
-console.log(certificates)
+
   useEffect(() => {
     dispatch(getCertificates(user.user.email)).then((res)=> {
-      // console.log('ccccccccccccccccc',res.payload.certificates.data.data)
+
       sessionStorage.setItem("certificates", JSON.stringify(res.payload.certificates.data.data));
     });
   }, []);
@@ -144,19 +144,8 @@ console.log(certificates)
           </Container>
         </>
       )}
-      <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Tekst w footer
-        </Typography>
-      </Box>
+      
+      <Footer/>
       </main>
     </>
   );

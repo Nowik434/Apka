@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { forgotPassword, loginUser, logoutUser, registerUser, resetPassword, updateUser } from "../Actions/authenticationActions";
+import { forgotPassword, loginUser, logoutUser, registerAsGuest, registerUser, resetPassword, updateUser } from "../Actions/authenticationActions";
 import { setMessage } from "./message";
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -26,6 +26,28 @@ export const register = createAsyncThunk(
   }
 );
 
+export const registerasguest = createAsyncThunk(
+  "auth/register",
+  async ({ email, password, firstname, lastname, userRole }, thunkAPI) => {
+    console.log('1111',email, password, firstname, lastname, userRole)
+    try {
+      const response = await registerAsGuest(email, password, firstname, lastname, userRole);
+      console.log(response)
+      return {user: response};
+    } catch (error) {
+      console.log('ERRRRR', error)
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+        
+      thunkAPI.dispatch(setMessage(message === "Request failed with status code 400" && "Podałeś nieprawidłowy adres email"));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
 
 
 export const login = createAsyncThunk(
@@ -37,7 +59,9 @@ export const login = createAsyncThunk(
     } catch (error) {
       console.error(error.response.data.error)
       let message;
-      if(error.response.data.error.status){
+      if(error.response.data.error && error.response.data.error.message === 'Your account email is not confirmed'){
+        message = 'Potwierdź konto przez Twój email'
+      }else if(error.response.data.error.status){
         message = 'Podałeś niepoprawne dane'
       }
       // const message =
@@ -140,7 +164,7 @@ export const forgot = createAsyncThunk(
       console.error(error.response.data.error)
       let message;
       if(error.response.data.error.status){
-        message = 'Podałeś niepoprawne dane'
+        message = 'Podałeś nieprawidłowy adres email'
       }
         console.log(message)
       thunkAPI.dispatch(setMessage(message));
@@ -151,7 +175,6 @@ export const forgot = createAsyncThunk(
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   await logoutUser();
-  console.log("LOGOUT from auth")
 });
 
 

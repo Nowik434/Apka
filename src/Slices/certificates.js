@@ -29,8 +29,6 @@ export const getCertificates = createAsyncThunk(
 );
 
 
-// const initialState = [];
-console.log(cert)
 const initialState = cert
   ? cert
   :  [];

@@ -22,6 +22,10 @@ import TermsAndConditions from "./Pages/TermsAndConditions";
 import Certificates from "./Pages/Certificates/index";
 import Copyright from "./Components/Copyright";
 import ForgotPassword from "./Pages/ForgotPassword";
+import YourCv from "./Pages/YourCv";
+import EmailConfirmation from "./Components/EmailConfirmed";
+import RegisterGuest from "./Pages/RegisterGuest";
+import EmailNotConfirmed from "./Components/EmailNotConfirmed";
 
 const theme = createTheme({
   palette: {
@@ -42,6 +46,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ProtectedRoute user={currentUser} />}>
+            {currentUser && currentUser.user.confirmed === false && (
+              <Navigate to={<EmailNotConfirmed/>}/>
+            )}
             {currentUser && currentUser.user.userRole === "user" && (
               <>
                 <Route path="/" element={<Certificates />} />
@@ -59,10 +66,12 @@ function App() {
 
             <Route path="/qualifications" element={<Qualifications />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/yourcv" element={<YourCv />} />
           </Route>
           {!currentUser && (
             <>
               <Route path="login" element={<Login />} />
+              <Route path="register" element={<RegisterGuest />} />
               <Route path="register">
                 <Route path=":userId">
                   <Route path=":courseId">
@@ -82,6 +91,7 @@ function App() {
               <Route path="reset-password" element={<ResetPassword />}>
                 <Route path=":code" element={<ResetPassword />} />
               </Route>
+              <Route path="confirmed" element={<EmailConfirmation />} />
             </>
           )}
           <Route path="*" element={<Error404 />} />
