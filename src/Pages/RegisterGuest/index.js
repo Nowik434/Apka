@@ -96,11 +96,9 @@ export default function RegisterGuest() {
         .then((res) => {
           console.log(res)
           if (res.user !== undefined && res.user.user.confirmed == true) {
-            console.log('MMMMMMMMMMMMMMMMMMMMM22222')
             navigate("/");
             setLoading(false);
           } else if(res.user.user.confirmed == false) {
-            console.log('MMMMMMMMMMMMMMMMMMMMM')
             navigate("/notconfirmed");
             setLoading(false);
           }

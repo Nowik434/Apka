@@ -87,9 +87,9 @@ function App() {
                 <Route path=":code" element={<ResetPassword />} />
               </Route>
               <Route path="confirmed" element={<EmailConfirmation />} />
-              <Route path="notconfirmed" element={<EmailNotConfirmed />} />
             </>
           )}
+          <Route path="notconfirmed" element={<EmailNotConfirmed />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </BrowserRouter>
