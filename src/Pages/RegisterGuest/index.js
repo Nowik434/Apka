@@ -11,7 +11,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useParams, useNavigate, Link as LinkR } from "react-router-dom";
 import Copyright from "../../Components/Copyright";
-import { register as registerUser, registerasguest } from "../../Slices/auth";
+import { register as registerUser } from "../../Slices/auth";
+import { registerasguest } from "../../Slices/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { Logo } from "../../Components/Logo";
 import FormGroup from "@mui/material/FormGroup";
@@ -93,8 +94,14 @@ export default function RegisterGuest() {
       )
         .unwrap()
         .then((res) => {
-          if (res.user !== undefined) {
+          console.log(res)
+          if (res.user !== undefined && res.user.user.confirmed == true) {
+            console.log('MMMMMMMMMMMMMMMMMMMMM22222')
             navigate("/");
+            setLoading(false);
+          } else if(res.user.user.confirmed == false) {
+            console.log('MMMMMMMMMMMMMMMMMMMMM')
+            navigate("/notconfirmed");
             setLoading(false);
           }
         })

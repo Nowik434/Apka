@@ -41,12 +41,13 @@ export const authHeader = () => {
       firstname,
       lastname,
       userRole
-    }) .then((response) => {
-        if (response.data.jwt) {
-          localStorage.setItem("user", JSON.stringify(response.data));
-        }
-        return response.data;
-      })
+    }).then((response) => {
+      console.log('fffffffffff', response)
+      if (response.data.jwt) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
+    })
   };
 
 

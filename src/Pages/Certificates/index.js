@@ -26,7 +26,6 @@ export default function Certificates() {
 
   useEffect(() => {
     dispatch(getCertificates(user.user.email)).then((res)=> {
-
       sessionStorage.setItem("certificates", JSON.stringify(res.payload.certificates.data.data));
     });
   }, []);

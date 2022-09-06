@@ -4,14 +4,12 @@ import Login from "./Pages/Login";
 import {
   Routes,
   Route,
-  useParams,
   BrowserRouter,
   Navigate,
 } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ProtectedRoute from "./Components/PrivateRoute";
 
-import Main from "./Pages/Main";
 import { useSelector } from "react-redux";
 import Qualifications from "./Pages/Qualifications";
 import SingleCertificate from "./Pages/SingleCertificate";
@@ -46,9 +44,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ProtectedRoute user={currentUser} />}>
-            {currentUser && currentUser.user.confirmed === false && (
-              <Navigate to={<EmailNotConfirmed/>}/>
-            )}
             {currentUser && currentUser.user.userRole === "user" && (
               <>
                 <Route path="/" element={<Certificates />} />
@@ -92,6 +87,7 @@ function App() {
                 <Route path=":code" element={<ResetPassword />} />
               </Route>
               <Route path="confirmed" element={<EmailConfirmation />} />
+              <Route path="notconfirmed" element={<EmailNotConfirmed />} />
             </>
           )}
           <Route path="*" element={<Error404 />} />
