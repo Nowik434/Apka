@@ -3,12 +3,14 @@ import auth from "./Slices/auth";
 import messageReducer from './Slices/message';
 import certificatesReducer from './Slices/certificates';
 import qualificationsReducer from './Slices/qualifications';
+import resumeSlice from './Slices/resume';
 
 const reducer = combineReducers({
   auth: auth,
   message: messageReducer,
   certificates: certificatesReducer,
   qualifications: qualificationsReducer,
+  resume: resumeSlice,
 })
 
 

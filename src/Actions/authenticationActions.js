@@ -23,13 +23,11 @@ export const authHeader = () => {
       lastname
     }) .then((response) => {
         if (response.data.jwt) {
+          window.parent.postMessage('Success', '*');
           localStorage.setItem("user", JSON.stringify(response.data));
         }
         return response.data;
       })
-      .catch((error) => {
-        console.log('An error occurred:', error.response);
-      });
   };
 
   export const registerAsGuest = async (email, password, firstname, lastname, userRole) => {
@@ -44,6 +42,7 @@ export const authHeader = () => {
     }).then((response) => {
       console.log('fffffffffff', response)
       if (response.data.jwt) {
+        window.parent.postMessage('Success', '*');
         localStorage.setItem("user", JSON.stringify(response.data));
       }
       return response.data;
@@ -94,6 +93,30 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     console.log(err)
   })
 };
+
+
+
+export const updateUserResume = async (id, token, payload) => {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  console.log('updateUserResume')
+  console.log(id, token, payload)
+    return axios
+    .put(API_URL + `/users/${id}`, {
+    // .put(`http://localhost:1337/api/users/1`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+          resume: payload,
+    })
+    .then((response) => {
+      if (token) {
+          localStorage.setItem("resume", JSON.stringify({resume: response.data}));
+        }
+      return {resume: response.data}
+    }).catch(err => {
+      console.log(err)
+    })
+  };
 
 
 // export const changePassword = async (id, token, payload) => {

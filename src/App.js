@@ -20,10 +20,12 @@ import TermsAndConditions from "./Pages/TermsAndConditions";
 import Certificates from "./Pages/Certificates/index";
 import Copyright from "./Components/Copyright";
 import ForgotPassword from "./Pages/ForgotPassword";
-import YourCv from "./Pages/YourCv";
 import EmailConfirmation from "./Components/EmailConfirmed";
 import RegisterGuest from "./Pages/RegisterGuest";
 import EmailNotConfirmed from "./Components/EmailNotConfirmed";
+import AboutUs from "./Pages/AboutUs";
+import Resume from './Pages/YourCv/components/Resume';
+import PdfComponent from './Pages/YourCv/components/PdfComponent';
 
 const theme = createTheme({
   palette: {
@@ -33,7 +35,15 @@ const theme = createTheme({
     fontWhite: {
       main: "#fff",
     },
+    // components: {
+    //   MuiUseMediaQuery: {
+    //     defaultProps: {
+    //         noSsr: true,
+    //     },
+    //   },
+    // },
   },
+  
 });
 
 function App() {
@@ -55,13 +65,16 @@ function App() {
             )}
             {currentUser && currentUser.user.userRole === "guest" && (
               <>
-                <Route path="/" element={<p>widok gościa</p>} />
+                <Route path="/" element={<AboutUs/>} />
               </>
             )}
 
             <Route path="/qualifications" element={<Qualifications />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/yourcv" element={<YourCv />} />
+            <Route path="/yourcv">
+                <Route path="/yourcv/" element={ <Resume/> } exact></Route>
+                <Route path="/yourcv/preview" element={<PdfComponent/>}></Route>
+            </Route>
           </Route>
           {!currentUser && (
             <>

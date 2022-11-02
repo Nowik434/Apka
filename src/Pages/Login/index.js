@@ -7,6 +7,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from '../../Components/Copyright';
@@ -66,7 +68,8 @@ export default function Login() {
       .unwrap()
       .then((res) => {
         if(res.user !== undefined) {
-          navigate("/")
+          navigate("/");
+          setLoading(false);
           // window.location.reload();
         }
       })
@@ -80,6 +83,14 @@ export default function Login() {
 
   return (
       <Container component="main" maxWidth="xs" sx={{mb: 4}}>
+        {loading &&
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        }
         <CssBaseline />
         <Box
           sx={{

@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useDispatch, useSelector } from "react-redux";
-import { Avatar, Paper, TextField } from "@mui/material";
+import { Avatar, Paper, TextField, useMediaQuery } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
@@ -60,6 +60,8 @@ export default function Profile() {
   const [region, setRegion] = useState(user.user.region);
   const [phone, setPhone] = useState(user.user.phone);
   const [file, setFile] = useState();
+
+  const mobileWidth = useMediaQuery('(max-width:900px)');
 
   const AdditionalFormSchema = yup.object().shape({
     firstname: yup.string().required("Imię jest wymagane").min(3, 'Imię jest za krótkie'),
@@ -130,7 +132,8 @@ export default function Profile() {
   };
 
   return (
-    <main>
+    <main style={mobileWidth ? {marginTop: '88px'} : null}>
+    {/* <main> */}
       <Typography
         component="h1"
         variant="h4"

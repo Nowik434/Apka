@@ -29,6 +29,14 @@ const getUserCertificates = (email) => {
 const getUserQualifications = () => {
   return axios.get(`${API_URL}/qualifications/?populate=*`);
 };
+
+const getUserResume = (id, token) => {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  return axios.get(`${API_URL}/users/${id}`);
+};
+
+
+
 // const getUserBoard = () => {
 //   return axios.get(API_URL + "user", { headers: authHeader() });
 // };
@@ -39,6 +47,7 @@ const userService = {
   getPublicContent,
   getUserCertificates,
   getUserQualifications,
+  getUserResume,
   // getUserBoard,
   // getAdminBoard,
 };

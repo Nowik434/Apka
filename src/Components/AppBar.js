@@ -38,11 +38,13 @@ const drawerWidth = 240;
 const pages = [
   { name: "Certyfikaty", page: "/" },
   { name: "Kwalifikacje", page: "/qualifications" },
+  { name: "Twoje CV", page: "/yourcv" },
 ];
 
 const guestPages = [
   { name: "O Fundacji", page: "/" },
   { name: "Kwalifikacje", page: "/qualifications" },
+  { name: "Twoje CV", page: "/yourcv" },
 ];
 
 const AppBarNav = () => {
@@ -64,6 +66,8 @@ const AppBarNav = () => {
     setOpen(false);
   };
 
+  
+
   const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
     alignItems: "center",
@@ -77,7 +81,13 @@ const AppBarNav = () => {
 
   return (
     <>
-      <AppBar position="relative">
+      <AppBar className="app-bar" position={mobileWidth ? "fixed" : "relative"}>
+        {/* <AppBar className="app-bar" sx={{
+        position: 'static',
+        '@media(minWidth: 900px)' : {
+          position: 'fixed'
+        }
+      }}> */}
         <Toolbar>
           <Typography variant="h6" sx={{ my: 0, flexGrow: 1 }}>
             <img src={Logo} style={{ maxWidth: "40px", marginRight: "30px" }} />
@@ -141,7 +151,7 @@ const AppBarNav = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex" }} >
         <CssBaseline />
         <Drawer
           sx={{

@@ -13,6 +13,8 @@ export const register = createAsyncThunk(
       console.log(response)
       return {user: response};
     } catch (error) {
+      // console.log('ERRRRR', error)
+      window.parent.postMessage('Fail', '*');
       const message =
         (error.response &&
           error.response.data &&
@@ -20,7 +22,7 @@ export const register = createAsyncThunk(
         error.message ||
         error.toString();
         
-      thunkAPI.dispatch(setMessage(message));
+      thunkAPI.dispatch(setMessage(message === "Request failed with status code 400" && "Podany adres email już istnieje"));
       return thunkAPI.rejectWithValue();
     }
   }
@@ -29,13 +31,14 @@ export const register = createAsyncThunk(
 export const registerasguest = createAsyncThunk(
   "auth/register",
   async ({ email, password, firstname, lastname, userRole }, thunkAPI) => {
-    console.log('1111',email, password, firstname, lastname, userRole)
+    // console.log('1111',email, password, firstname, lastname, userRole)
     try {
       const response = await registerAsGuest(email, password, firstname, lastname, userRole);
       console.log(response)
       return {user: response};
     } catch (error) {
-      console.log('ERRRRR', error)
+      // console.log('ERRRRR', error)
+      window.parent.postMessage('Fail', '*');
       const message =
         (error.response &&
           error.response.data &&
@@ -43,7 +46,7 @@ export const registerasguest = createAsyncThunk(
         error.message ||
         error.toString();
         
-      thunkAPI.dispatch(setMessage(message === "Request failed with status code 400" && "Podałeś nieprawidłowy adres email"));
+      thunkAPI.dispatch(setMessage(message === "Request failed with status code 400" && "Podany adres email już istnieje"));
       return thunkAPI.rejectWithValue();
     }
   }

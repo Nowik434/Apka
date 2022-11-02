@@ -12,7 +12,7 @@ import Container from "@mui/material/Container";
 import { useParams, useNavigate, Link as LinkR } from "react-router-dom";
 import Copyright from "../../Components/Copyright";
 import { register as registerUser } from "../../Slices/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Logo } from "../../Components/Logo";
 import FormGroup from "@mui/material/FormGroup";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useDocumentTitle } from "../../Hooks/useDocumentTitle";
+import { Alert, AlertTitle } from "@mui/material";
 
 const token = "YOUR_TOKEN_HERE"; // TOKEN TRZEBA USTAWIĆ, Narazie działa bez
 
@@ -27,6 +28,7 @@ export default function Register() {
   useDocumentTitle('rejestracja')
   let navigate = useNavigate();
   const dispatch = useDispatch();
+  const errorMsg = useSelector((state) => state.message)
   let { userId, courseId, firstname, lastname, email } = useParams();
 
   const schema = yup.object({
@@ -218,6 +220,11 @@ export default function Register() {
             helperText={errors.repeatPassword && errors.repeatPassword.message}
             error={errors.repeatPassword !== undefined}
           />
+
+          {console.log(errorMsg.message)}
+            {errorMsg.message !== '' && <Alert severity="error">
+              <AlertTitle>{errorMsg.message}</AlertTitle>
+            </Alert>}
 
 {/* <TextField
             margin="normal"

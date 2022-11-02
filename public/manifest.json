@@ -3,7 +3,7 @@
   "short_name": "Twoje Kwalifikacje VCC",
   "theme_color": "#cba05f",
   "background_color": "#cba05f",
-  "display": "standalone",
+  "display": "fullscreen",
   "scope": "/",
   "start_url": "/",
   "icons": [
