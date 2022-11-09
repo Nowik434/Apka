@@ -18,7 +18,8 @@ import ChangingProgressProvider from "../../../Components/ChangingProgressProvid
 import BorderLinearProgressBar from "../../../Components/LinearProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { getResume, updateResume } from "../../../Slices/resume";
-import LeaveAlert from "../../../Components/LeaveAlert";
+import UsePrompt from "../../../Components/LeaveAlert";
+import { useState } from "react";
 
 
 function Resume() {
@@ -26,7 +27,12 @@ function Resume() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const resume = useSelector((state) => state.resume);
+  const isEdited = useSelector((state) => state.resume.isEdited);
+  const [isDirty, setIsDirty] = useState(false);
 
+useEffect(()=>{
+  setIsDirty(isEdited)
+}, [isEdited])
 
   useEffect(() => {
     dispatch(getResume({ id: user.user.id, token: user.jwt }));
@@ -113,21 +119,27 @@ function Resume() {
           </Grid>
         </Grid>
 
-        <LeaveAlert/>
+        <UsePrompt message="Czy napewno chcesz wyjść? twoje zmiany mogą nie zostać zapisane. Aby zapisać zmiany w swoim CV kliknij przycisk Zapisz. Jeżeli chcesz wyjść bez zapisywania kliknik OK" when={isDirty}/>
 
-        <Grid container sx={{ justifyContent: "center", mt: 6 }}>
+{
+  isEdited ? (
+<Grid container sx={{ justifyContent: "center", mt: 6 }}>
           <Button variant="contained" onClick={handleClick}>
             Zapisz
           </Button>
         </Grid>
+  ) : (
+    <Grid container sx={{ justifyContent: "center", mt: 6 }}>
+    <Button variant="contained">
+      <NavLink style={{ color: "#fff" }} to="/yourcv/preview">
+        Podejrzyj swoje CV
+      </NavLink>
+    </Button>
+  </Grid>
+  )
+}
+        
 
-        <Grid container sx={{ justifyContent: "center", mt: 6 }}>
-          <Button variant="contained">
-            <NavLink style={{ color: "#fff" }} to="/yourcv/preview">
-              Podejrzyj swoje CV
-            </NavLink>
-          </Button>
-        </Grid>
       </Container>
     </>
   );

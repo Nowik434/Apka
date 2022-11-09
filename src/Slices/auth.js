@@ -10,7 +10,10 @@ export const register = createAsyncThunk(
     console.log('1111',email, password, userId, courseId, firstname, lastname)
     try {
       const response = await registerUser(email, password, userId, courseId, firstname, lastname);
-      console.log(response)
+      console.log(response, response.ok)
+      if(response.ok){
+        window.parent.postMessage('Success', '*');
+      }
       return {user: response};
     } catch (error) {
       // console.log('ERRRRR', error)
@@ -35,6 +38,9 @@ export const registerasguest = createAsyncThunk(
     try {
       const response = await registerAsGuest(email, password, firstname, lastname, userRole);
       console.log(response)
+      if(response.ok){
+        window.parent.postMessage('Success', '*');
+      }
       return {user: response};
     } catch (error) {
       // console.log('ERRRRR', error)

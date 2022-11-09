@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-// import { actionCreators } from "../state/index";
-// import { actionCreators } from "../../../Slices/resume";
 
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";

@@ -22,8 +22,8 @@ export const authHeader = () => {
       firstname,
       lastname
     }) .then((response) => {
+      window.parent.postMessage('Success', '*');
         if (response.data.jwt) {
-          window.parent.postMessage('Success', '*');
           localStorage.setItem("user", JSON.stringify(response.data));
         }
         return response.data;
@@ -40,9 +40,8 @@ export const authHeader = () => {
       lastname,
       userRole
     }).then((response) => {
-      console.log('fffffffffff', response)
+      window.parent.postMessage('Success', '*');
       if (response.data.jwt) {
-        window.parent.postMessage('Success', '*');
         localStorage.setItem("user", JSON.stringify(response.data));
       }
       return response.data;

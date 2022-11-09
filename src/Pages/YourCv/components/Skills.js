@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import {
-  MdAddCircleOutline,
-  MdEdit,
-  MdClose,
-  MdOutlineCancel,
-} from "react-icons/md";
 // import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
 import { ImCheckmark, ImCross } from "react-icons/im";
 import { useSelector, useDispatch } from "react-redux";
 
