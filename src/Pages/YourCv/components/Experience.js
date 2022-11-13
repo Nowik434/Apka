@@ -1,53 +1,43 @@
-import React, { useEffect, useState } from 'react'
-// import Row from 'react-bootstrap/Row';
-// import Col from 'react-bootstrap/Col';
-// import { MdAddCircleOutline, MdEdit, MdClose, MdDelete } from 'react-icons/md';
-// import { HiOfficeBuilding } from 'react-icons/hi';
-// import Modal from 'react-bootstrap/Modal';
-// import Form from 'react-bootstrap/Form';
-// import { ImCheckmark, ImCross } from 'react-icons/im'
-// import Months from '../smallComponents/Months';
-// import Years from '../smallComponents/Years';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import { Grid, Typography, Button } from "@mui/material";
+import { Grid, Typography, Button, FormHelperText } from "@mui/material";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
-import CreateIcon from '@mui/icons-material/Create';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { addExperience, editExperience, removeExperience } from '../../../Slices/resume';
-
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+import CreateIcon from "@mui/icons-material/Create";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {
+  addExperience,
+  editExperience,
+  removeExperience,
+} from "../../../Slices/resume";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useForm, Controller } from "react-hook-form";
-
+import { useForm, Controller, FormProvider } from "react-hook-form";
 
 function Experience() {
-
-  const experienceList = useSelector(state => state.resume.experienceList)
+  const experienceList = useSelector((state) => state.resume.experienceList);
   const dispatch = useDispatch();
-  // const {addExperience, editExperience, removeExperience} = bindActionCreators(actionCreators, dispatch);
 
   const [show, setShow] = useState(false);
   const [Alert, setAlert] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+  // const [deleteId, setDeleteId] = useState(null);
 
   const [experienceData, setExperienceData] = useState({
-    id:"",
     title: "",
     company: "",
     isWorking: false,
@@ -57,14 +47,13 @@ function Experience() {
     endYear: "",
     location: "",
     description: "",
-    isEdit:false
+    isEdit: false,
   });
 
   const handleClose = () => {
-    // setValidated(false);
     setShow(false);
     setExperienceData({
-      id:"",
+      id: "",
       title: "",
       company: "",
       isWorking: false,
@@ -74,16 +63,10 @@ function Experience() {
       endYear: "",
       location: "",
       description: "",
-      isEdit: false
-    })
-  }
+      isEdit: false,
+    });
+  };
   const handleShow = () => setShow(true);
-  // const handleAlertClose = () => setAlert(false);
-  // const handleAlert = (id) => {
-  //   console.log(id)
-  //   setDeleteId(id)
-  //   setAlert(true);
-  // }
 
   const ExperienceSchema = yup.object().shape({
     title: yup
@@ -94,145 +77,85 @@ function Experience() {
       .string()
       .required("Pole firma jest wymagane")
       .min(3, "Pole firma jest za krótkie"),
-    location: yup.string().required("Lokalizacja jest wymagana").min(3, "Lokalizacja jest za krótka"),
-    description: yup.string()
-    .required("Opis jest wymagany")
-    .min(3, "Opis jest za krótki"),
-    date: yup
+    location: yup
       .string()
-      .required("Data jest wymagana")
+      .required("Lokalizacja jest wymagana")
+      .min(3, "Lokalizacja jest za krótka"),
+    description: yup
+      .string()
+      .required("Opis jest wymagany")
+      .min(3, "Opis jest za krótki"),
+    startMonth: yup.string().required("Miesiąc jest wymagany"),
+    endMonth: yup.string().required("Miesiąc jest wymagany"),
+    startYear: yup.string().required("Rok jest wymagany"),
+    endYear: yup.string().required("Rok jest wymagany"),
+    // date: yup.string().required("Data jest wymagana"),
   });
 
-  const {
-    value,
-    shouldUnregister,
-    watch,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
+  const form = useForm({
     mode: "onChange",
     resolver: yupResolver(ExperienceSchema),
+    // defaultValues: {
+    //   // id: "",
+    //   title: "",
+    //   company: "",
+    //   isWorking: false,
+    //   startMonth: "",
+    //   startYear: "",
+    //   endMonth: "",
+    //   endYear: "",
+    //   location: "",
+    //   description: "",
+    //   isEdit: false,
+    // },
   });
 
-  useEffect(() => {
-    const subscription = watch((value) => {
-      setExperienceData(state => ({...state, ...value}))
-    });
-    console.log('bbbbbbbbbbbbbbbb',experienceData)
-    return () => subscription.unsubscribe();
-  }, [watch, experienceData]);
-  
-  console.log(experienceData)
+  const year = new Date().getFullYear();
+  const years = Array.from(new Array(20), (val, index) => index - 10 + year);
 
-  // const [list, setList] = useState([]);
-  const [form, setForm] = useState({
-    id:"",
-    title: "",
-    company: "",
-    isWorking: false,
-    startMonth: "",
-    startYear: "",
-    endMonth: "",
-    endYear: "",
-    location: "",
-    description: "",
-    isEdit:false
-  });
-
-
-  const handleForm = (e) => {
-    setForm((old) => {
-      return {
-        ...old,
-        [e.target.name]: e.target.type === 'checkbox' ? e.target.checked : e.target.value
-      }
-    })
-  }
-
-  const year = (new Date()).getFullYear();
-    const years = Array.from(new Array(20),( val, index) => index -10 + year);
-
-
-  const [validated, setValidated] = useState(false);
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-console.log('dfdffffff')
-    if (Object.keys(errors).length === 0) {
-      if (experienceData.isEdit) {
-        dispatch(editExperience(experienceData));
-      } else {
-        dispatch(addExperience(experienceData));
-      }
-      setShow(false);
+  const onSubmit = (data) => {
+    console.log(data);
+    console.log("submited", experienceData);
+    console.log("submited data", data);
+    if (experienceData.isEdit) {
+      dispatch(editExperience({ ...experienceData, ...data }));
+    } else {
+      dispatch(addExperience(data));
     }
+    setShow(false);
     setExperienceData({
-        id:"",
-        title: "",
-        company: "",
-        isWorking: false,
-        startMonth: "",
-        startYear: "",
-        endMonth: "",
-        endYear: "",
-        location: "",
-        description: "",
-        isEdit: false
-    })
+      id: "",
+      title: "",
+      company: "",
+      isWorking: false,
+      startMonth: "",
+      startYear: "",
+      endMonth: "",
+      endYear: "",
+      location: "",
+      description: "",
+      isEdit: false,
+    });
   };
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const valid = event.currentTarget;
-  //   if(!valid.checkValidity()){
-  //     setValidated(true);
-  //   }
-  //   else{
-  //     if(form.isEdit){
-  //       dispatch(editExperience(form));
-  //     }
-  //     else{
-  //       dispatch(addExperience(form))
-  //     }
-  //     setShow(false);
-  //     setForm({
-  //       id:"",
-  //       title: "",
-  //       company: "",
-  //       isWorking: false,
-  //       startMonth: "",
-  //       startYear: "",
-  //       endMonth: "",
-  //       endYear: "",
-  //       location: "",
-  //       description: "",
-  //       isEdit: false
-  //     })
-  //   }
-  // }
 
   const handleEdit = (id) => {
     const form = experienceList[id];
-    console.log({...form, isEdit: true, id: id})
-    // form.isEdit = true;
-    // form.id = id
-    setExperienceData({...form, isEdit: true, id: id})
+    setExperienceData({ ...form, isEdit: true, id: id });
+    console.log("IF HANDLE EDIT", { ...form, isEdit: true, id: id });
+    console.log("IF HANDLE EDIT DSDSDSDSDS", experienceData);
+
     setShow(true);
-  }
+  };
 
   const handleDelete = (id) => {
     dispatch(removeExperience(id));
-    // list.splice(id, 1);
-    // setList(list);
     setAlert(false);
-  }
+  };
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
     ...theme.typography.body2,
     padding: theme.spacing(1),
-    backgroundColor: "#f8f9fa",
     paddingTop: "15px",
     paddingBottom: "15px",
     textAlign: "left",
@@ -249,6 +172,9 @@ console.log('dfdffffff')
     boxShadow: 24,
     p: 4,
   };
+
+  // const onSubmit = (data) => console.log(data);
+  const onError = (error) => console.log(error);
 
   return (
     <>
@@ -270,64 +196,93 @@ console.log('dfdffffff')
         </Grid>
       </Item>
 
-      <Grid container >
+      <Grid container>
         <Grid sx={{ alignSelf: "center", flexGrow: 1 }}>
-        {experienceList.map((item, id) => {
-          return (
-          <Paper
-            elevation={0}
-            key={id}
-            sx={{
-              p: 2,
-              bgcolor: "background.default",
-              // height: "100px",
-              borderBottom: '1px solid #555',
-              borderRadius: 0,
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item sm={2} sx={{alignSelf: 'center'}}>
-                <WorkOutlineIcon fontSize='large' sx={{color: '#d2ab67'}}/>
-                
-              </Grid>
-              <Grid item xs={6} sx={{alignSelf: 'center'}}>
-              <Typography variant='h6' >{item.title}</Typography>
-              <Typography variant="h7" display="block" gutterBottom sx={{mb: 0}}>
-              {item.company} • {item.startMonth} {item.startYear}
-      {`${
-                      item.isWorking
-                        ? " - Present"
-                        : " - " + item.endMonth + " " + item.endYear
-                    }`}
-      </Typography>
-      <Typography variant="caption" display="block" gutterBottom sx={{mb: 0}}>
-      {item.location}
-      </Typography>
-      <Typography variant="caption" display="block" gutterBottom sx={{mb: 0}}>
-      {item.description}
-      </Typography>
-              </Grid>
-              <Grid
-                item
-                sm={4}
+          {experienceList.map((item, id) => {
+            return (
+              <Paper
+                elevation={0}
+                key={id}
                 sx={{
-                  display: 'flex',
-                  flexFlow: 'column-reverse',
-                  alignItems: 'end',
-                  alignSelf: 'center',
+                  p: 2,
+                  bgcolor: "background.default",
+                  // height: "100px",
+                  borderBottom: "1px solid #555",
+                  borderRadius: 0,
                 }}
               >
-                <IconButton aria-label="delete" size="small" onClick={() => {handleDelete(id)}}>
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-                <IconButton aria-label="create" size="small" onClick={() => {handleEdit(id)}}>
-                  <CreateIcon fontSize="small" />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Paper>
-          )
-        })}
+                <Grid container spacing={2}>
+                  <Grid item sm={2} sx={{ alignSelf: "center" }}>
+                    <WorkOutlineIcon
+                      fontSize="large"
+                      sx={{ color: "#d2ab67" }}
+                    />
+                  </Grid>
+                  <Grid item xs={6} sx={{ alignSelf: "center" }}>
+                    <Typography variant="h6">{item.title}</Typography>
+                    <Typography
+                      variant="h7"
+                      display="block"
+                      gutterBottom
+                      sx={{ mb: 0 }}
+                    >
+                      {item.company} • {item.startMonth} {item.startYear}
+                      {`${
+                        item.isWorking
+                          ? " - Present"
+                          : " - " + item.endMonth + " " + item.endYear
+                      }`}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      display="block"
+                      gutterBottom
+                      sx={{ mb: 0 }}
+                    >
+                      {item.location}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      display="block"
+                      gutterBottom
+                      sx={{ mb: 0 }}
+                    >
+                      {item.description}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    sm={4}
+                    sx={{
+                      display: "flex",
+                      flexFlow: "column-reverse",
+                      alignItems: "end",
+                      alignSelf: "center",
+                    }}
+                  >
+                    <IconButton
+                      aria-label="delete"
+                      size="small"
+                      onClick={() => {
+                        handleDelete(id);
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      aria-label="create"
+                      size="small"
+                      onClick={() => {
+                        handleEdit(id);
+                      }}
+                    >
+                      <CreateIcon fontSize="small" />
+                    </IconButton>
+                  </Grid>
+                </Grid>
+              </Paper>
+            );
+          })}
         </Grid>
       </Grid>
 
@@ -336,263 +291,422 @@ console.log('dfdffffff')
           <Typography variant="h4" sx={{ mb: 2 }}>
             Doświadczenie
           </Typography>
-          <Box
+          <FormProvider {...form}>
+            <Box
               component="form"
               sx={{
                 "& .MuiTextField-root": { my: 1, width: "100%" },
               }}
               noValidate
               autoComplete="off"
-              onSubmit={(e) => handleSubmit(onSubmit(e))}
+              onSubmit={form.handleSubmit(onSubmit, onError)}
             >
-          <Grid container spacing={0}>
-            
-{console.log('fdffffff', experienceData)}
+              <Grid container spacing={0}>
                 <Controller
                   name="title"
-                  control={control}
                   defaultValue={experienceData.title}
                   rules={{ required: true }}
                   shouldUnregister="true"
-                  render={({ field }) => (
-                    <TextField
-                      label="Tytuł"
-                      placeholder="np. Kucharz"
-                      {...field}
-                      value={field.value}
-                      helperText={errors.title && errors.title.message}
-                      error={errors.title !== undefined}
-                      sx={{ width: "100%" }}
-                    />
+                  render={({
+                    field: { value, onChange },
+                    fieldState: { error },
+                  }) => (
+                    <>
+                      {console.log(
+                        value,
+                        error !== undefined ? error.message : null
+                      )}
+                      <TextField
+                        label="Tytuł"
+                        placeholder="np. Kucharz"
+                        value={value}
+                        onChange={onChange}
+                        helperText={error && error.message}
+                        error={error !== undefined}
+                        sx={{ width: "100%" }}
+                      />
+                    </>
                   )}
                 />
 
                 <Controller
                   name="company"
-                  control={control}
                   defaultValue={experienceData.company}
                   rules={{ required: true }}
-                  render={({ field }) => (
+                  shouldUnregister="true"
+                  render={({
+                    field: { value, onChange },
+                    fieldState: { error },
+                  }) => (
                     <TextField
                       label="Nazwa firmy"
                       placeholder="np. Restauracja Roma"
-                      {...field}
-                      helperText={errors.company && errors.company.message}
-                      error={errors.company !== undefined}
+                      value={value}
+                      onChange={onChange}
+                      helperText={error && error.message}
+                      error={error !== undefined}
                       sx={{ width: "100%" }}
                     />
                   )}
                 />
 
+                <FormControlLabel
+                  control={<Checkbox checked={experienceData.isWorking} />}
+                  name="isWorking"
+                  label="Aktualnie pracuję na tym stanowisku"
+                  // onChange={handleForm}
+                />
 
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Typography variant="caption">
+                      Start Miesiąc - Rok
+                    </Typography>
 
-              <FormControlLabel
-                control={<Checkbox checked={experienceData.isWorking} />}
-                name="isWorking"
-                label="Aktualnie pracuję na tym stanowisku"
-                onChange={handleForm}
+                    <Controller
+                      name="startMonth"
+                      rules={{ required: true }}
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          {console.log(value, error)}
+                          <FormControl
+                            fullWidth
+                            sx={{ my: 1 }}
+                            error={error && true}
+                          >
+                            <InputLabel id="startMonth">
+                              Start Miesiąc
+                            </InputLabel>
+                            <Select
+                              defaultValue={experienceData.startMonth}
+                              labelId="startMonth"
+                              label="Start Miesiąc"
+                              onChange={onChange}
+                              sx={{ width: "100%" }}
+                            >
+                              <MenuItem value="Styczeń">Styczeń</MenuItem>
+                              <MenuItem value="Luty">Luty</MenuItem>
+                              <MenuItem value="Marzec">Marzec</MenuItem>
+                              <MenuItem value="Kwiecień">Kwiecień</MenuItem>
+                              <MenuItem value="Maj">Maj</MenuItem>
+                              <MenuItem value="Czerwiec">Czerwiec</MenuItem>
+                              <MenuItem value="Lipiec">Lipiec</MenuItem>
+                              <MenuItem value="Sierpień">Sierpień</MenuItem>
+                              <MenuItem value="Wrzesień">Wrzesień</MenuItem>
+                              <MenuItem value="Październik">
+                                Październik
+                              </MenuItem>
+                              <MenuItem value="Listopad">Listopad</MenuItem>
+                              <MenuItem value="Grudzień">Grudzień</MenuItem>
+                            </Select>
+                            {error && (
+                              <FormHelperText>{error.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </>
+                      )}
+                    />
+
+                    <Controller
+                      name="startYear"
+                      rules={{ required: true }}
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          {console.log(value, error)}
+                          <FormControl
+                            fullWidth
+                            sx={{ my: 1 }}
+                            error={error && true}
+                          >
+                            <InputLabel id="startYear">Start Rok</InputLabel>
+                            <Select
+                              defaultValue={experienceData.startYear}
+                              labelId="startYear"
+                              label="Start Rok"
+                              onChange={onChange}
+                              sx={{ width: "100%" }}
+                            >
+                              <MenuItem value="" key="0">
+                                Rok
+                              </MenuItem>
+                              {years.map((year, index) => {
+                                return (
+                                  <MenuItem key={index + 1} value={year}>
+                                    {year}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {error && (
+                              <FormHelperText>{error.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </>
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Typography variant="caption">
+                      Zakończenie Miesiąc - Rok
+                    </Typography>
+
+                    <Controller
+                      name="endMonth"
+                      rules={{ required: true }}
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          {console.log(value, error)}
+                          <FormControl
+                            fullWidth
+                            sx={{ my: 1 }}
+                            error={error && true}
+                          >
+                            <InputLabel id="endMonth">Start Miesiąc</InputLabel>
+                            <Select
+                              defaultValue={experienceData.endMonth}
+                              labelId="endMonth"
+                              label="Zakończenie Miesiąc"
+                              onChange={onChange}
+                              sx={{ width: "100%" }}
+                            >
+                              <MenuItem value="Styczeń">Styczeń</MenuItem>
+                              <MenuItem value="Luty">Luty</MenuItem>
+                              <MenuItem value="Marzec">Marzec</MenuItem>
+                              <MenuItem value="Kwiecień">Kwiecień</MenuItem>
+                              <MenuItem value="Maj">Maj</MenuItem>
+                              <MenuItem value="Czerwiec">Czerwiec</MenuItem>
+                              <MenuItem value="Lipiec">Lipiec</MenuItem>
+                              <MenuItem value="Sierpień">Sierpień</MenuItem>
+                              <MenuItem value="Wrzesień">Wrzesień</MenuItem>
+                              <MenuItem value="Październik">
+                                Październik
+                              </MenuItem>
+                              <MenuItem value="Listopad">Listopad</MenuItem>
+                              <MenuItem value="Grudzień">Grudzień</MenuItem>
+                            </Select>
+                            {error && (
+                              <FormHelperText>{error.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </>
+                      )}
+                    />
+
+                    <Controller
+                      name="endYear"
+                      rules={{ required: true }}
+                      render={({
+                        field: { value, onChange },
+                        fieldState: { error },
+                      }) => (
+                        <>
+                          {console.log(value, error)}
+                          <FormControl
+                            fullWidth
+                            sx={{ my: 1 }}
+                            error={error && true}
+                          >
+                            <InputLabel id="endYear">
+                              Zakończenie Rok
+                            </InputLabel>
+                            <Select
+                              defaultValue={experienceData.endYear}
+                              labelId="endYear"
+                              label="Zakończenie Rok"
+                              onChange={onChange}
+                              sx={{ width: "100%" }}
+                            >
+                              <MenuItem value="" key="0">
+                                Rok
+                              </MenuItem>
+                              {years.map((year, index) => {
+                                return (
+                                  <MenuItem key={index + 1} value={year}>
+                                    {year}
+                                  </MenuItem>
+                                );
+                              })}
+                            </Select>
+                            {error && (
+                              <FormHelperText>{error.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        </>
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Controller
+                name="location"
+                defaultValue={experienceData.location}
+                rules={{ required: true }}
+                shouldUnregister="true"
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    label="Lokalizacja"
+                    placeholder="np. Lublin, Polska"
+                    // {...field}
+                    value={value}
+                    onChange={onChange}
+                    helperText={error && error.message}
+                    error={error !== undefined}
+                    sx={{ width: "100%", mt: "15px" }}
+                  />
+                )}
               />
-           
-            <Grid container spacing={2}>
-            <Grid item xs={6} >
-              <Typography variant="caption">Start Miesiąc - Rok</Typography>
-              <FormControl fullWidth sx={{ my: 1 }}>
-                <InputLabel id="startMonth">Start Miesiąc</InputLabel>
-                <Select
-                  labelId="startMonth"
-                  name="startMonth"
-                  value={experienceData.startMonth}
-                  label="Start Miesiąc"
-                  onChange={handleForm}
-                  sx={{ width: "100%" }}
-                >
-                  <MenuItem value="Styczeń">Styczeń</MenuItem>
-                  <MenuItem value="Luty">Luty</MenuItem>
-                  <MenuItem value="Marzec">Marzec</MenuItem>
-                  <MenuItem value="Kwiecień">Kwiecień</MenuItem>
-                  <MenuItem value="Maj">Maj</MenuItem>
-                  <MenuItem value="Czerwiec">Czerwiec</MenuItem>
-                  <MenuItem value="Lipiec">Lipiec</MenuItem>
-                  <MenuItem value="Sierpień">Sierpień</MenuItem>
-                  <MenuItem value="Wrzesień">Wrzesień</MenuItem>
-                  <MenuItem value="Październik">Październik</MenuItem>
-                  <MenuItem value="Listopad">Listopad</MenuItem>
-                  <MenuItem value="Grudzień">Grudzień</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ my: 1 }}>
-                <InputLabel id="startYear">Start Rok</InputLabel>
-                <Select
-                  labelId="startYear"
-                  name="startYear"
-                  value={experienceData.startYear}
-                  label="Start Miesiąc"
-                  onChange={handleForm}
-                  sx={{ width: "100%" }}
-                >
-                  <MenuItem value="" key="0">
-                    Rok
-                  </MenuItem>
-                  {years.map((year, index) => {
-                    return (
-                      <MenuItem key={index + 1} value={year}>
-                        {year}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="caption">
-                Zakończenie Miesiąc - Rok
-              </Typography>
-              <FormControl fullWidth sx={{ my: 1 }}>
-                <InputLabel id="endMonth">Zakończenie Miesiąc</InputLabel>
-                <Select
-                  labelId="endMonth"
-                  name="endMonth"
-                  value={experienceData.endMonth}
-                  label="Zakończenie Miesiąc"
-                  onChange={handleForm}
-                  sx={{ width: "100%" }}
-                  disabled={experienceData.isWorking}
-                >
-                  <MenuItem value="Styczeń">Styczeń</MenuItem>
-                  <MenuItem value="Luty">Luty</MenuItem>
-                  <MenuItem value="Marzec">Marzec</MenuItem>
-                  <MenuItem value="Kwiecień">Kwiecień</MenuItem>
-                  <MenuItem value="Maj">Maj</MenuItem>
-                  <MenuItem value="Czerwiec">Czerwiec</MenuItem>
-                  <MenuItem value="Lipiec">Lipiec</MenuItem>
-                  <MenuItem value="Sierpień">Sierpień</MenuItem>
-                  <MenuItem value="Wrzesień">Wrzesień</MenuItem>
-                  <MenuItem value="Październik">Październik</MenuItem>
-                  <MenuItem value="Listopad">Listopad</MenuItem>
-                  <MenuItem value="Grudzień">Grudzień</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ my: 1 }}>
-                <InputLabel id="endYear">Zakończenie Rok</InputLabel>
-                <Select
-                  labelId="endYear"
-                  name="endYear"
-                  value={experienceData.endYear}
-                  label="Zakończenie Rok"
-                  onChange={handleForm}
-                  sx={{ width: "100%" }}
-                >
-                  <MenuItem value="" key="0">
-                    Rok
-                  </MenuItem>
-                  {years.map((year, index) => {
-                    return (
-                      <MenuItem key={index + 1} value={year}>
-                        {year}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-            </Grid>
-          </Grid>
 
+              <Controller
+                name="description"
+                defaultValue={experienceData.description}
+                rules={{ required: true }}
+                shouldUnregister="true"
+                render={({
+                  field: { value, onChange },
+                  fieldState: { error },
+                }) => (
+                  <TextField
+                    label="Opis"
+                    placeholder="np. Pracuje jako przedstawiciel handlowy"
+                    value={value}
+                    onChange={onChange}
+                    helperText={error && error.message}
+                    error={error !== undefined}
+                    sx={{ width: "100%", mt: "15px" }}
+                  />
+                )}
+              />
 
-                <Controller
-                  name="location"
-                  control={control}
-                  defaultValue={experienceData.location}
-                  rules={{ required: true }}
-                  shouldUnregister="true"
-                  render={({ field }) => (
-                    <TextField
-                      label="Lokalizacja"
-                      placeholder="np. Lublin, Polska"
-                      {...field}
-                      value={field.value}
-                      helperText={errors.location && errors.location.message}
-                      error={errors.location !== undefined}
-                      sx={{ width: "100%", mt: "15px" }}
-                    />
-                  )}
-                />
-
-                <Controller
-                  name="description"
-                  control={control}
-                  defaultValue={experienceData.description}
-                  rules={{ required: true }}
-                  shouldUnregister="true"
-                  render={({ field }) => (
-                    <TextField
-                      label="Opis"
-                      placeholder="np. Pracuje jako przedstawiciel handlowy"
-                      {...field}
-                      value={field.value}
-                      helperText={errors.description && errors.description.message}
-                      error={errors.description !== undefined}
-                      sx={{ width: "100%", mt: "15px" }}
-                    />
-                  )}
-                />
-
-          <Button variant="outlined" type="submit" sx={{ mt: "10px" }}>
-            Zapisz zmiany
-          </Button>
-          </Box>
+              <Button variant="outlined" type="submit" sx={{ mt: "10px" }}>
+                Zapisz zmiany
+              </Button>
+            </Box>
+          </FormProvider>
         </Box>
       </Modal>
     </>
   );
 }
 
-export default Experience
+export default Experience;
 
+// WORKING VERSION
 
+// import React, { Component, useEffect, useState } from "react";
+// // import Row from 'react-bootstrap/Row';
+// // import Col from 'react-bootstrap/Col';
+// // import { MdAddCircleOutline, MdEdit, MdClose, MdDelete } from 'react-icons/md';
+// // import { HiOfficeBuilding } from 'react-icons/hi';
+// // import Modal from 'react-bootstrap/Modal';
+// // import Form from 'react-bootstrap/Form';
+// // import { ImCheckmark, ImCross } from 'react-icons/im'
+// // import Months from '../smallComponents/Months';
+// // import Years from '../smallComponents/Years';
+// import { useSelector, useDispatch } from "react-redux";
 
+// import Paper from "@mui/material/Paper";
+// import { styled } from "@mui/material/styles";
+// import { Grid, Typography, Button } from "@mui/material";
+// import Fab from "@mui/material/Fab";
+// import AddIcon from "@mui/icons-material/Add";
+// import Modal from "@mui/material/Modal";
+// import Box from "@mui/material/Box";
+// import TextField from "@mui/material/TextField";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import Checkbox from "@mui/material/Checkbox";
+// import InputLabel from "@mui/material/InputLabel";
+// import MenuItem from "@mui/material/MenuItem";
+// import Select from "@mui/material/Select";
+// import FormControl from "@mui/material/FormControl";
+// import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+// import CreateIcon from "@mui/icons-material/Create";
+// import IconButton from "@mui/material/IconButton";
+// import DeleteIcon from "@mui/icons-material/Delete";
+// import {
+//   addExperience,
+//   editExperience,
+//   removeExperience,
+// } from "../../../Slices/resume";
 
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
+// import { useForm, Controller, FormProvider } from "react-hook-form";
 
+// const ExperienceSchema = yup.object().shape({
+//   title: yup
+//     .string()
+//     .required("Stanowisko jest wymagane")
+//     .min(3, "Stanowisko jest za krótkie"),
+//   company: yup
+//     .string()
+//     .required("Pole firma jest wymagane")
+//     .min(3, "Pole firma jest za krótkie"),
+//   location: yup
+//     .string()
+//     .required("Lokalizacja jest wymagana")
+//     .min(3, "Lokalizacja jest za krótka"),
+//   description: yup
+//     .string()
+//     .required("Opis jest wymagany")
+//     .min(3, "Opis jest za krótki"),
+//   date: yup.string().required("Data jest wymagana"),
+// });
 
+// function Experience() {
+//   const form = useForm({
+//     resolver: yupResolver(ExperienceSchema),
+//     defaultValues: {
+//       title: "",
+//     },
+//   });
 
+//   const onSubmit = (data) => console.log(data);
+//   const onError = (error) => console.log(error);
 
+//   return (
+//     <FormProvider {...form}>
+//       <form onSubmit={form.handleSubmit(onSubmit, onError)}>
+//         <Controller
+//           name="title"
+//           // control={control}
+//           defaultValue={"fds"}
+//           rules={{ required: true }}
+//           shouldUnregister="true"
+//           render={({ field: { value, errors } }) => (
+//             <TextField
+//               label="Tytuł"
+//               placeholder="np. Kucharz"
+//               // {...field}
+//               value={value}
+//               // helperText={errors.title && errors.title.message}
+//               // error={errors.title !== undefined}
+//               sx={{ width: "100%" }}
+//             />
+//           )}
+//         />
+//         <Button variant="contained" color="primary" type="submit" />
+//       </form>
+//     </FormProvider>
+//   );
+// }
 
+// export default Experience;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// OLD VERSION
 
 // import React, { useState } from 'react'
 // // import Row from 'react-bootstrap/Row';
@@ -625,7 +739,6 @@ export default Experience
 // import IconButton from '@mui/material/IconButton';
 // import DeleteIcon from '@mui/icons-material/Delete';
 // import { addExperience, editExperience, removeExperience } from '../../../Slices/resume';
-
 
 // function Experience({updateRes}) {
 
@@ -662,7 +775,6 @@ export default Experience
 //     setAlert(true);
 //   }
 
-
 //   // const [list, setList] = useState([]);
 //   const [form, setForm] = useState({
 //     id:"",
@@ -688,7 +800,6 @@ export default Experience
 
 //   const year = (new Date()).getFullYear();
 //     const years = Array.from(new Array(20),( val, index) => index -10 + year);
-
 
 //   const [validated, setValidated] = useState(false);
 
@@ -797,7 +908,7 @@ export default Experience
 //             <Grid container spacing={2}>
 //               <Grid item sm={2} sx={{alignSelf: 'center'}}>
 //                 <WorkOutlineIcon fontSize='large' sx={{color: '#d2ab67'}}/>
-                
+
 //               </Grid>
 //               <Grid item xs={6} sx={{alignSelf: 'center'}}>
 //               <Typography variant='h6' >{item.title}</Typography>
